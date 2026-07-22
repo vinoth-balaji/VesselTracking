@@ -1,0 +1,127 @@
+<div class="app-shell">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">AIS POLYGON MOVEMENT ANALYSIS</div>
+      <h1>Vessel Tracking & Analysis</h1>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="control-panel">
+      <section class="card">
+        <div class="section-heading"><strong>Load Scenario</strong></div>
+        <select [(ngModel)]="selectedScenarioId" (change)="loadScenario(selectedScenarioId())">
+          <option value="">-- Choose a scenario --</option>
+          <option *ngFor="let s of scenarios" [value]="s.id">{{s.name}}</option>
+        </select>
+        <div class="scenario-desc" *ngIf="selectedScenarioId()">
+          {{scenarios.find(s => s.id === selectedScenarioId())?.description}}
+        </div>
+      </section>
+
+      <section class="card polygon-card">
+        <div class="section-heading">
+          <div><strong>Draw Analysis Area</strong></div>
+        </div>
+        <div class="button-row">
+          <button class="primary wide" (click)="drawPolygon()">＋ Draw Polygon</button>
+        </div>
+        <div class="button-row">
+          <button class="secondary" (click)="clearPolygon()">Clear</button>
+        </div>
+        <p class="message">{{scenarioMessage()}}</p>
+      </section>
+
+      <section class="card">
+        <div class="section-heading"><strong>Time Period</strong></div>
+        <div class="two-col">
+          <label>From<input type="datetime-local" [(ngModel)]="periodA"></label>
+          <label>To<input type="datetime-local" [(ngModel)]="periodB"></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading"><strong>Vessel Movement</strong></div>
+        <div class="checks">
+          <label><input type="checkbox" [(ngModel)]="movementFilters.Entered"><span class="status-dot entered"></span>Entered</label>
+          <label><input type="checkbox" [(ngModel)]="movementFilters.Exited"><span class="status-dot exited"></span>Exited</label>
+          <label><input type="checkbox" [(ngModel)]="movementFilters.Remained"><span class="status-dot remained"></span>Remained</label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading"><strong>Quick Filters</strong></div>
+        <label>Commodity<select [(ngModel)]="commodity"><option *ngFor="let item of commodities()">{{item}}</option></select></label>
+        <label>Voyage status<select [(ngModel)]="voyageStatus"><option *ngFor="let item of statuses()">{{item}}</option></select></label>
+        <div class="button-row">
+          <button class="primary wide" (click)="runAnalysis()">Analyze</button>
+          <button class="secondary" (click)="resetFilters()">Reset</button>
+        </div>
+      </section>
+
+      <section class="card" *ngIf="selectedVessel()">
+        <div class="section-heading"><strong>Voyage Details</strong></div>
+        <div class="voyage-info">
+          <div class="voyage-row">
+            <strong>Vessel:</strong> {{selectedVessel()?.name}}
+          </div>
+          <div class="voyage-row">
+            <strong>IMO:</strong> {{selectedVessel()?.imo}}
+          </div>
+          <div class="voyage-row">
+            <strong>Status:</strong> <span class="voyage-status">{{selectedVessel()?.voyageStatus}}</span>
+          </div>
+          <div class="voyage-row">
+            <strong>Commodity:</strong> {{selectedVessel()?.commodity}}
+          </div>
+          <div class="voyage-row">
+            <strong>Load Region:</strong> {{selectedVessel()?.loadRegion || 'N/A'}}
+          </div>
+          <div class="voyage-row">
+            <strong>Discharge Region:</strong> {{selectedVessel()?.dischargeRegion || 'N/A'}}
+          </div>
+          <div class="voyage-row">
+            <strong>Disport:</strong> {{selectedVessel()?.disport || 'N/A'}}
+          </div>
+          <div class="voyage-row">
+            <strong>ETA:</strong> {{selectedVessel()?.eta || 'N/A'}}
+          </div>
+          <div class="voyage-row">
+            <strong>Speed:</strong> {{selectedVessel()?.speed}} knots
+          </div>
+          <div class="voyage-row">
+            <strong>Current Position:</strong> {{selectedVessel()?.latitude | number:'1.2-2'}}, {{selectedVessel()?.longitude | number:'1.2-2'}}
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="content-area">
+      <div class="map-card">
+        <div #mapViewNode class="map-view"></div>
+      </div>
+
+      <section class="results-card">
+        <div class="results-heading">
+          <div><h2>Matching Vessels</h2><span>{{displayedVessels().length}} result(s)</span></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Vessel / IMO</th><th>Movement</th><th>Commodity</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let vessel of displayedVessels()">
+                <td><button class="vessel-link" (click)="focusVessel(vessel)">{{vessel.name}}</button><small>{{vessel.imo}}</small></td>
+                <td><span class="movement" [ngClass]="movementClass(vessel.movement)">{{vessel.movement}}</span></td>
+                <td>{{vessel.commodity}}</td>
+                <td>{{vessel.voyageStatus}}</td>
+                <td><button class="add-voyage" (click)="addVoyage(vessel)">{{vessel.assignedVoyage ? 'Edit' : 'Add'}} Voyage</button></td>
+              </tr>
+              <tr *ngIf="displayedVessels().length === 0"><td colspan="8" class="empty">No vessels match the current scenario.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="voyageMessage()" class="toast">{{voyageMessage()}} <button (click)="voyageMessage.set('')">×</button></div>
+      </section>
+    </section>
+  </main>
+</div>

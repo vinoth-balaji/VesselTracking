@@ -1,0 +1,63 @@
+import { Injectable } from '@angular/core';
+import { Vessel, VoyagePort } from '../models/vessel';
+
+@Injectable({ providedIn: 'root' })
+export class MockAisService {
+  getVessels(): Vessel[] {
+    return [
+      this.vessel(1, 'IMO9387421', 'Pacific Horizon', -94.63, 29.31, 78, 12.6, 'Crude', 'In Transit', 'Entered', 'US Gulf', 'Northwest Europe', 'WTI Midland', 720000, 'Rotterdam', true,
+        [
+          { name: 'Houston', longitude: -95.4, latitude: 29.8, type: 'load' },
+          { name: 'Casablanca', longitude: -7.6, latitude: 33.6, type: 'intermediate', eta: '2026-07-28' },
+          { name: 'Hamburg', longitude: 9.9, latitude: 53.5, type: 'intermediate', eta: '2026-08-02' },
+          { name: 'Rotterdam', longitude: 4.5, latitude: 51.9, type: 'discharge', eta: '2026-08-05' }
+        ]),
+      this.vessel(2, 'IMO9651840', 'Atlantic Pioneer', -93.88, 28.76, 214, 10.2, 'Clean Products', 'Watch', 'Remained', 'US Gulf', 'Caribbean', 'ULSD', 310000, 'Freeport', true,
+        [
+          { name: 'Houston', longitude: -95.4, latitude: 29.8, type: 'load' },
+          { name: 'Freeport', longitude: -93.9, latitude: 29.0, type: 'discharge', eta: '2026-07-24' }
+        ]),
+      this.vessel(3, 'IMO9725304', 'Emerald Trader', -95.12, 29.02, 131, 8.4, 'Dirty Products', 'Verify Load Date', 'Exited', 'Mexico East', 'US Atlantic', 'Fuel Oil', 480000, 'New York', false,
+        [
+          { name: 'Veracruz', longitude: -96.1, latitude: 19.2, type: 'load' },
+          { name: 'New Orleans', longitude: -90.1, latitude: 29.9, type: 'intermediate', eta: '2026-07-26' },
+          { name: 'New York', longitude: -74.0, latitude: 40.7, type: 'discharge', eta: '2026-07-31' }
+        ]),
+      this.vessel(4, 'IMO9481162', 'Gulf Mariner', -90.48, 28.92, 302, 13.7, 'LPG', 'To Load', 'Entered', 'US Gulf', 'Far East', 'Propane', 250000, 'Chiba', false,
+        [
+          { name: 'Corpus Christi', longitude: -97.2, latitude: 27.6, type: 'load' },
+          { name: 'Singapore', longitude: 103.8, latitude: 1.4, type: 'intermediate', eta: '2026-08-15' },
+          { name: 'Chiba', longitude: 140.1, latitude: 35.6, type: 'discharge', eta: '2026-08-22' }
+        ]),
+      this.vessel(5, 'IMO9567317', 'Liberty Star', -96.04, 27.82, 21, 6.1, 'Crude', 'Off EMEX', 'Remained', 'US Gulf', 'Mediterranean', 'Mars', 610000, 'Augusta', true,
+        [
+          { name: 'Corpus Christi', longitude: -97.2, latitude: 27.6, type: 'load' },
+          { name: 'Augusta', longitude: 24.1, latitude: 37.5, type: 'discharge', eta: '2026-08-10' }
+        ]),
+      this.vessel(6, 'IMO9870418', 'Ocean Reliance', -92.12, 27.64, 257, 11.4, 'Clean Products', 'Verify Discharge Date', 'Exited', 'Caribbean', 'US Gulf', 'Gasoline', 295000, 'Houston', true,
+        [
+          { name: 'Trinidad', longitude: -61.5, latitude: 10.7, type: 'load' },
+          { name: 'Aruba', longitude: -70.0, latitude: 12.1, type: 'intermediate', eta: '2026-07-23' },
+          { name: 'Houston', longitude: -95.4, latitude: 29.8, type: 'discharge', eta: '2026-07-26' }
+        ])
+    ];
+  }
+
+  private vessel(id: number, imo: string, name: string, longitude: number, latitude: number, heading: number, speed: number,
+    commodity: Vessel['commodity'], voyageStatus: Vessel['voyageStatus'], movement: Vessel['movement'], loadRegion: string,
+    dischargeRegion: string, quality: string, quantity: number, disport: string, assignedVoyage: boolean,
+    voyagePorts: VoyagePort[]): Vessel {
+    const track = Array.from({ length: 12 }, (_, index) => ({
+      longitude: longitude - (11 - index) * 0.075 + Math.sin(index) * 0.025,
+      latitude: latitude - (11 - index) * 0.035 + Math.cos(index) * 0.018,
+      timestamp: new Date(Date.UTC(2026, 6, 20, index * 2)).toISOString(),
+      speed: Math.max(0.4, speed - 1 + index * 0.08),
+      heading
+    }));
+    return {
+      id, imo, name, longitude, latitude, heading, speed, commodity, voyageStatus, movement, loadRegion, dischargeRegion,
+      quality, quantity, disport, eta: '2026-07-25T12:00:00Z', dischargeDate: assignedVoyage ? '2026-07-27' : undefined,
+      assignedVoyage, track, voyagePorts
+    };
+  }
+}
