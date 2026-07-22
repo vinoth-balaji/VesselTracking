@@ -1,55 +1,385 @@
-:host { display: block; height: 100vh; }
-.app-shell { height: 100%; display: flex; flex-direction: column; }
-.topbar { min-height: 60px; background: #0c263b; color: #fff; display: flex; align-items: center; padding: 12px 24px; box-shadow: 0 2px 10px #081b2a55; z-index: 2; }
-h1 { margin: 2px 0 0; font-size: 20px; font-weight: 650; }
-.eyebrow { font-size: 10px; letter-spacing: 1.7px; color: #8fc5e5; font-weight: 700; }
-.workspace { flex: 1; min-height: 0; display: grid; grid-template-columns: 320px 1fr; gap: 12px; padding: 12px; }
-.control-panel { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; min-width: 280px; }
-.card { background: #fff; border: 1px solid #d8e2ea; border-radius: 9px; box-shadow: 0 2px 6px #2637460d; padding: 13px; }
-.section-heading { margin-bottom: 11px; font-size: 13px; font-weight: 600; }
-label { display: flex; flex-direction: column; gap: 5px; color: #536270; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
-input, select { width: 100%; height: 34px; border: 1px solid #cad6df; border-radius: 5px; padding: 5px 8px; background: #fff; color: #1d2b36; font-size: 12px; outline: none; }
-input:focus, select:focus { border-color: #1976a8; box-shadow: 0 0 0 2px #1976a819; }
-.scenario-desc { font-size: 10px; color: #536270; line-height: 1.3; margin-top: 6px; padding: 6px; background: #f0f7fb; border-radius: 4px; }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; min-width: 0; }
-.two-col label { min-width: 0; }
-.button-row { display: flex; gap: 8px; margin-top: 10px; }
-button { border: 0; border-radius: 5px; padding: 8px 11px; cursor: pointer; font-size: 11px; font-weight: 700; }
-.primary { color: #fff; background: #0d6f9f; }
-.primary:hover { background: #095b84; }
-.secondary { color: #284456; background: #f3f7fa; border: 1px solid #cad7df; }
-.wide { flex: 1; }
-.checks { display: flex; gap: 15px; }
-.checks label { flex-direction: row; align-items: center; font-size: 11px; text-transform: none; color: #2c3c48; }
-.checks input { width: 15px; height: 15px; }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
-.status-dot.entered { background: #23845c; }
-.status-dot.exited { background: #bd4b3b; }
-.status-dot.remained { background: #7160a8; }
-.message { margin: 9px 0 0; padding: 8px; border-radius: 4px; background: #f0f7fb; color: #376075; font-size: 10px; line-height: 1.4; }
-.content-area { min-width: 0; min-height: 0; display: grid; grid-template-rows: 1fr 280px; gap: 12px; }
-.map-card { position: relative; overflow: hidden; min-height: 0; border-radius: 9px; box-shadow: 0 2px 6px #2637460d; }
-.map-view { position: absolute; inset: 0; }
-.results-card { overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid #d8e2ea; border-radius: 9px; box-shadow: 0 2px 6px #2637460d; }
-.results-heading { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border-bottom: 1px solid #e1e8ed; }
-.results-heading h2 { font-size: 14px; margin: 0; }
-.results-heading span { font-size: 10px; color: #71808b; }
-.table-wrap { overflow: auto; flex: 1; }
-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-th { position: sticky; top: 0; background: #f4f7f9; color: #5b6b77; text-transform: uppercase; letter-spacing: .35px; font-size: 9px; text-align: left; padding: 8px; border-bottom: 1px solid #dce5eb; z-index: 1; }
-td { padding: 7px 8px; border-bottom: 1px solid #e8edf1; color: #33434e; }
-tbody tr:hover { background: #f4f9fc; }
-td small { display: block; color: #84919a; margin-top: 2px; }
-.vessel-link { padding: 0; background: none; color: #0a6696; text-align: left; cursor: pointer; font-weight: 600; }
-.movement { padding: 3px 7px; border-radius: 10px; font-weight: 700; }
-.movement.entered { background: #e6f5ef; color: #217553; }
-.movement.exited { background: #faece9; color: #a33e31; }
-.movement.remained { background: #f0ecf8; color: #65518f; }
-.add-voyage { padding: 5px 8px; background: #eef6fb; color: #0b6898; border: 1px solid #bcd7e7; border-radius: 4px; font-weight: 600; cursor: pointer; }
-.add-voyage:hover { background: #d8eaf5; }
-.voyage-info { display: flex; flex-direction: column; gap: 7px; }
-.voyage-row { display: flex; gap: 8px; font-size: 11px; line-height: 1.4; color: #384957; }
-.voyage-row strong { flex: 0 0 100px; color: #1d2b36; font-weight: 600; }
-.voyage-status { background: #eef6fb; color: #0b6898; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 10px; }
-@media (max-width: 1000px) { .workspace { grid-template-columns: 280px 1fr; } .two-col { grid-template-columns: 1fr; } }
-@media (max-width: 760px) { .workspace { display: flex; flex-direction: column; } .control-panel { overflow: visible; } .content-area { min-height: 750px; } }
+:host {
+    display: block;
+    height: 100vh;
+}
+
+.app-shell {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    min-height: 60px;
+    background: #0c263b;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    box-shadow: 0 2px 10px #081b2a55;
+    z-index: 2;
+}
+
+h1 {
+    margin: 2px 0 0;
+    font-size: 20px;
+    font-weight: 650;
+}
+
+.eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.7px;
+    color: #8fc5e5;
+    font-weight: 700;
+}
+
+.workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 12px;
+    padding: 12px;
+}
+
+.control-panel {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 280px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #d8e2ea;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px #2637460d;
+    padding: 13px;
+}
+
+.section-heading {
+    margin-bottom: 11px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #536270;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+input,
+select {
+    width: 100%;
+    height: 34px;
+    border: 1px solid #cad6df;
+    border-radius: 5px;
+    padding: 5px 8px;
+    background: #fff;
+    color: #1d2b36;
+    font-size: 12px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #1976a8;
+    box-shadow: 0 0 0 2px #1976a819;
+}
+
+.scenario-desc {
+    font-size: 10px;
+    color: #536270;
+    line-height: 1.3;
+    margin-top: 6px;
+    padding: 6px;
+    background: #f0f7fb;
+    border-radius: 4px;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    min-width: 0;
+}
+
+.two-col label {
+    min-width: 0;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+button {
+    border: 0;
+    border-radius: 5px;
+    padding: 8px 11px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.primary {
+    color: #fff;
+    background: #0d6f9f;
+}
+
+.primary:hover {
+    background: #095b84;
+}
+
+.secondary {
+    color: #284456;
+    background: #f3f7fa;
+    border: 1px solid #cad7df;
+}
+
+.wide {
+    flex: 1;
+}
+
+.checks {
+    display: flex;
+    gap: 15px;
+}
+
+.checks label {
+    flex-direction: row;
+    align-items: center;
+    font-size: 11px;
+    text-transform: none;
+    color: #2c3c48;
+}
+
+.checks input {
+    width: 15px;
+    height: 15px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.entered {
+    background: #23845c;
+}
+
+.status-dot.exited {
+    background: #bd4b3b;
+}
+
+.status-dot.remained {
+    background: #7160a8;
+}
+
+.message {
+    margin: 9px 0 0;
+    padding: 8px;
+    border-radius: 4px;
+    background: #f0f7fb;
+    color: #376075;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.content-area {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: 1fr 280px;
+    gap: 12px;
+}
+
+.map-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px #2637460d;
+}
+
+.map-view {
+    position: absolute;
+    inset: 0;
+}
+
+.results-card {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #d8e2ea;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px #2637460d;
+}
+
+.results-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 13px;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.results-heading h2 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.results-heading span {
+    font-size: 10px;
+    color: #71808b;
+}
+
+.table-wrap {
+    overflow: auto;
+    flex: 1;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    background: #f4f7f9;
+    color: #5b6b77;
+    text-transform: uppercase;
+    letter-spacing: .35px;
+    font-size: 9px;
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #dce5eb;
+    z-index: 1;
+}
+
+td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #e8edf1;
+    color: #33434e;
+}
+
+tbody tr:hover {
+    background: #f4f9fc;
+}
+
+td small {
+    display: block;
+    color: #84919a;
+    margin-top: 2px;
+}
+
+.vessel-link {
+    padding: 0;
+    background: none;
+    color: #0a6696;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.movement {
+    padding: 3px 7px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.movement.entered {
+    background: #e6f5ef;
+    color: #217553;
+}
+
+.movement.exited {
+    background: #faece9;
+    color: #a33e31;
+}
+
+.movement.remained {
+    background: #f0ecf8;
+    color: #65518f;
+}
+
+.add-voyage {
+    padding: 5px 8px;
+    background: #eef6fb;
+    color: #0b6898;
+    border: 1px solid #bcd7e7;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-voyage:hover {
+    background: #d8eaf5;
+}
+
+.voyage-info {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.voyage-row {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #384957;
+}
+
+.voyage-row strong {
+    flex: 0 0 100px;
+    color: #1d2b36;
+    font-weight: 600;
+}
+
+.voyage-status {
+    background: #eef6fb;
+    color: #0b6898;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 10px;
+}
+
+@media (max-width: 1000px) {
+    .workspace {
+        grid-template-columns: 280px 1fr;
+    }
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .workspace {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .control-panel {
+        overflow: visible;
+    }
+
+    .content-area {
+        min-height: 750px;
+    }
+}

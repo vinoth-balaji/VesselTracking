@@ -1,5 +1,12 @@
-export type MovementType = 'Entered' | 'Exited' | 'Remained';
-export type VoyageStatus = 'To Load' | 'Verify Load Date' | 'In Transit' | 'Watch' | 'Off EMEX' | 'Off WAFR' | 'Verify Discharge Date';
+export type MovementType = "Entered" | "Exited" | "Remained";
+export type VoyageStatus =
+  | "To Load"
+  | "Verify Load Date"
+  | "In Transit"
+  | "Watch"
+  | "Off EMEX"
+  | "Off WAFR"
+  | "Verify Discharge Date";
 
 export interface TrackPoint {
   longitude: number;
@@ -13,7 +20,7 @@ export interface VoyagePort {
   name: string;
   longitude: number;
   latitude: number;
-  type: 'load' | 'intermediate' | 'discharge';
+  type: "load" | "intermediate" | "discharge";
   eta?: string;
 }
 
@@ -25,7 +32,7 @@ export interface Vessel {
   latitude: number;
   heading: number;
   speed: number;
-  commodity: 'Crude' | 'Clean Products' | 'Dirty Products' | 'LPG';
+  commodity: "Crude" | "Clean Products" | "Dirty Products" | "LPG";
   voyageStatus: VoyageStatus;
   movement: MovementType;
   loadRegion: string;
